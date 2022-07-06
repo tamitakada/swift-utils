@@ -2,6 +2,9 @@ import UIKit
 
 
 extension UIView {
+    
+    // MARK: Positioning Constraints
+    
     func centerView(x: Bool, y: Bool) {
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -42,6 +45,32 @@ extension UIView {
             self.leadingAnchor.constraint(equalTo: leading, constant: constantLeading ?? 0).isActive = true
         }
     }
+    
+    func setRectangularPadding(horizontal: CGFloat?, vertical: CGFloat?) {
+        if let side = horizontal {
+            constrain(
+                top: nil, constantTop: 0,
+                bottom: nil, constantBottom: 0,
+                trailing: superview?.trailingAnchor, constantTrailing: -side,
+                leading: superview?.leadingAnchor, constantLeading: side
+            )
+        }
+        
+        if let top = vertical {
+            constrain(
+                top: superview?.topAnchor, constantTop: top,
+                bottom: superview?.bottomAnchor, constantBottom: -top,
+                trailing: nil, constantTrailing: 0,
+                leading: nil, constantLeading: 0
+            )
+        }
+    }
+    
+    func fillView() {
+        setRectangularPadding(horizontal: 0, vertical: 0)
+    }
+    
+    // MARK: Size Constraints
     
     func setSize(width: CGFloat?, height: CGFloat?) {
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -98,27 +127,24 @@ extension UIView {
         secondConstraint?.isActive = true
     }
     
-    func setRectangularPadding(horizontal: CGFloat?, vertical: CGFloat?) {
-        if let side = horizontal {
-            constrain(
-                top: nil, constantTop: 0,
-                bottom: nil, constantBottom: 0,
-                trailing: superview?.trailingAnchor, constantTrailing: -side,
-                leading: superview?.leadingAnchor, constantLeading: side
-            )
+    func constrainSize(width: CGFloat?, height: CGFloat?, lessThan: Bool) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let width = width {
+            if lessThan {
+                self.widthAnchor.constraint(lessThanOrEqualToConstant: width).isActive = true
+            } else {
+                self.widthAnchor.constraint(greaterThanOrEqualToConstant: width).isActive = true
+            }
         }
         
-        if let top = vertical {
-            constrain(
-                top: superview?.topAnchor, constantTop: top,
-                bottom: superview?.bottomAnchor, constantBottom: -top,
-                trailing: nil, constantTrailing: 0,
-                leading: nil, constantLeading: 0
-            )
+        if let height = height {
+            if lessThan {
+                self.heightAnchor.constraint(lessThanOrEqualToConstant: height).isActive = true
+            } else {
+                self.heightAnchor.constraint(greaterThanOrEqualToConstant: height).isActive = true
+            }
         }
     }
-    
-    func fillView() {
-        setRectangularPadding(horizontal: 0, vertical: 0)
-    }
+
 }
